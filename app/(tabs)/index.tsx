@@ -1,11 +1,13 @@
 import { useContext } from "react";
-import { StyleSheet, FlatList, Pressable } from "react-native";
-import { useAuthenticator } from "@aws-amplify/ui-react-native";
+import { StyleSheet, FlatList } from "react-native";
 
 import { Todo } from "@/src/API";
 import { TodoContext } from "@/context/TodoContext";
 import { SafeAreaView, Text, View } from "@/components/Themed";
 import { FontAwesome } from "@expo/vector-icons";
+import Spacings from "@/constants/Spacings";
+import { Link } from "expo-router";
+import Colors from "@/constants/Colors";
 
 export default function TabOneScreen() {
   const { todos } = useContext(TodoContext);
@@ -14,12 +16,25 @@ export default function TabOneScreen() {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Add todo</Text>
       <View style={styles.separator} />
-      <TodosFlatList todos={todos} />
+      <TodoList todos={todos} />
     </SafeAreaView>
   );
 }
 
-const TodosFlatList = ({ todos }: { todos: Todo[] }) => {
+const TodoList = ({ todos }: { todos: Todo[] }) => {
+  if (todos.length === 0) {
+    return (
+      <View style={styles.emptyTodoContainer}>
+        <FontAwesome name="list-alt" size={100} color="#ccc" />
+        <Text style={styles.emptyTodoText}>No todos yet</Text>
+        <View style={styles.separator} />
+        <Link href="/add-todo" style={styles.addTodoText}>
+          Add a todo
+        </Link>
+      </View>
+    );
+  }
+
   return (
     <FlatList
       data={todos}
@@ -37,18 +52,18 @@ const TodosFlatList = ({ todos }: { todos: Todo[] }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: Spacings.x_3,
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
   },
   separator: {
-    height: 16,
+    height: Spacings.x_4,
   },
   item: {
-    padding: 8,
-    marginBottom: 8,
+    padding: Spacings.x_2,
+    marginBottom: Spacings.x_2,
     backgroundColor: "#f5f5f5",
     borderRadius: 4,
     borderWidth: 1,
@@ -56,5 +71,16 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 18,
+  },
+  emptyTodoContainer: {
+    alignItems: "center",
+    paddingVertical: Spacings.x_5,
+  },
+  emptyTodoText: {
+    fontSize: 20,
+  },
+  addTodoText: {
+    fontSize: 16,
+    color: Colors.light.brandColors.primary,
   },
 });

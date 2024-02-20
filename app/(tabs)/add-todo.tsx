@@ -77,14 +77,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   separator: {
-    height: 24,
+    height: Spacings.x_6,
   },
   input: {
     borderColor: "#222",
     borderWidth: 1,
     height: 40,
     borderRadius: 4,
-    paddingHorizontal: 16,
+    paddingHorizontal: Spacings.x_4,
     color: "#000",
   },
 });

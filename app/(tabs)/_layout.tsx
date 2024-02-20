@@ -11,6 +11,7 @@ import {
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
+import { useColor } from "@/components/Themed";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -40,12 +41,12 @@ const SignOutButton = () => {
 };
 
 function TabLayout() {
-  const colorScheme = useColorScheme();
+  const activeColor = useColor("brandColors.primary");
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: activeColor,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
@@ -68,7 +69,7 @@ function TabLayout() {
                     <FontAwesome
                       name="info-circle"
                       size={25}
-                      color={Colors[colorScheme ?? "light"].text}
+                      color={activeColor}
                       style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                     />
                   )}
