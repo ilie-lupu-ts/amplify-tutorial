@@ -1,9 +1,11 @@
 import { useContext } from "react";
-import { StyleSheet, FlatList } from "react-native";
+import { StyleSheet, FlatList, Pressable } from "react-native";
+import { useAuthenticator } from "@aws-amplify/ui-react-native";
 
 import { Todo } from "@/src/API";
 import { TodoContext } from "@/context/TodoContext";
 import { SafeAreaView, Text, View } from "@/components/Themed";
+import { FontAwesome } from "@expo/vector-icons";
 
 export default function TabOneScreen() {
   const { todos } = useContext(TodoContext);
