@@ -52,9 +52,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="add-todo"
         options={{
           title: "Add",
+          headerTitle: "",
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="pencil-square-o" color={color} />
           ),

@@ -1,39 +1,20 @@
+import { useContext } from "react";
 import { StyleSheet, FlatList } from "react-native";
-import { generateClient } from "aws-amplify/api";
 
-import { Text, View } from "@/components/Themed";
-import { useEffect, useState } from "react";
 import { Todo } from "@/src/API";
-import { listTodos } from "@/src/graphql/queries";
-
-const client = generateClient();
+import { TodoContext } from "@/context/TodoContext";
+import { SafeAreaView, Text, View } from "@/components/Themed";
 
 export default function TabOneScreen() {
-  const [todos, setTodos] = useState<Todo[]>([]);
-
-  useEffect(() => {
-    fetchTodos();
-  }, []);
+  const { todos } = useContext(TodoContext);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Todos</Text>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Add todo</Text>
       <View style={styles.separator} />
       <TodosFlatList todos={todos} />
-    </View>
+    </SafeAreaView>
   );
-
-  async function fetchTodos() {
-    try {
-      const todoData = await client.graphql({
-        query: listTodos,
-      });
-      const todos = todoData.data.listTodos.items;
-      setTodos(todos);
-    } catch (err) {
-      console.log("error fetching todos");
-    }
-  }
 }
 
 const TodosFlatList = ({ todos }: { todos: Todo[] }) => {
@@ -41,9 +22,11 @@ const TodosFlatList = ({ todos }: { todos: Todo[] }) => {
     <FlatList
       data={todos}
       renderItem={({ item: { id, name, description } }) => (
-        <Text key={id} style={styles.item}>
-          {name} - {description}
-        </Text>
+        <View style={styles.item}>
+          <Text key={id} style={styles.itemText}>
+            {name} - {description}
+          </Text>
+        </View>
       )}
     />
   );
@@ -59,12 +42,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   separator: {
-    marginVertical: 16,
-    width: "80%",
+    height: 16,
   },
   item: {
-    padding: 10,
+    padding: 8,
+    marginBottom: 8,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: "#aaa",
+  },
+  itemText: {
     fontSize: 18,
-    height: 44,
   },
 });
