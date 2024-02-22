@@ -1,13 +1,11 @@
+import { Link } from "expo-router";
 import { useContext } from "react";
-import { StyleSheet, FlatList } from "react-native";
+import { StyleSheet, FlatList, SafeAreaView, Text, View } from "react-native";
 
 import { Todo } from "@/src/API";
 import { TodoContext } from "@/context/TodoContext";
-import { SafeAreaView, Text, View } from "@/components/Themed";
 import { FontAwesome } from "@expo/vector-icons";
 import Spacings from "@/constants/Spacings";
-import { Link } from "expo-router";
-import Colors from "@/constants/Colors";
 
 export default function TabOneScreen() {
   const { todos } = useContext(TodoContext);
@@ -28,7 +26,7 @@ const TodoList = ({ todos }: { todos: Todo[] }) => {
         <FontAwesome name="list-alt" size={100} color="#ccc" />
         <Text style={styles.emptyTodoText}>No todos yet</Text>
         <View style={styles.separator} />
-        <Link href="/add-todo" style={styles.addTodoText}>
+        <Link href="/home/add-todo" style={styles.addTodoText}>
           Add a todo
         </Link>
       </View>
@@ -81,6 +79,5 @@ const styles = StyleSheet.create({
   },
   addTodoText: {
     fontSize: 16,
-    color: Colors.light.brandColors.primary,
   },
 });

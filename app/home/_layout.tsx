@@ -1,19 +1,13 @@
 import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Tabs } from "expo-router";
-import { Alert, Pressable, Text, View } from "react-native";
+import { Link, Tabs, useRouter, useNavigation } from "expo-router";
+import { Alert, Pressable } from "react-native";
 
-import {
-  withAuthenticator,
-  useAuthenticator,
-} from "@aws-amplify/ui-react-native";
+import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react-native";
 
-import Colors from "@/constants/Colors";
-import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import { useColor } from "@/components/Themed";
+import { View } from "@/components/View";
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];
   color: string;
@@ -22,14 +16,23 @@ function TabBarIcon(props: {
 }
 
 const SignOutButton = () => {
-  const { user, signOut } = useAuthenticator();
+  const router = useRouter();
+
+  const { user, signOut, authStatus, challengeName } = useAuthenticator(
+    (context) => [context.user]
+  );
 
   async function onPress() {
-    console.log("logOut user: ", user);
+    console.log({ user, authStatus, challengeName });
 
     Alert.alert("Sign out", "Are you sure you want to sign out?", [
       { text: "Cancel", style: "cancel" },
-      { text: "OK", onPress: () => signOut() },
+      {
+        text: "OK",
+        onPress: () => {
+          signOut();
+        },
+      },
     ]);
   }
 
@@ -41,12 +44,9 @@ const SignOutButton = () => {
 };
 
 function TabLayout() {
-  const activeColor = useColor("brandColors.primary");
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: activeColor,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
@@ -69,7 +69,6 @@ function TabLayout() {
                     <FontAwesome
                       name="info-circle"
                       size={25}
-                      color={activeColor}
                       style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                     />
                   )}
@@ -94,4 +93,4 @@ function TabLayout() {
   );
 }
 
-export default withAuthenticator(TabLayout);
+export default TabLayout;

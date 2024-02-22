@@ -1,33 +1,34 @@
 import { useMemo } from "react";
 import {
   Pressable,
-  Text,
   StyleSheet,
   Animated,
   ActivityIndicator,
+  useColorScheme,
 } from "react-native";
 
-import { View, useColor } from "./Themed";
+import { useTheme } from "@aws-amplify/ui-react-native";
+import { View } from "./View";
+import { Text } from "./Text";
+
+type ButtonVariant = "primary" | "secondary";
 
 type ButtonProps = {
   label: string;
-  variant?: "primary" | "secondary";
+  variant?: ButtonVariant;
   onPress: () => void;
   disabled?: boolean;
   loading?: boolean;
 };
 
-export default function Button({
+export const Button = ({
   variant = "primary",
   disabled = false,
   loading = false,
   label,
   onPress,
-}: ButtonProps) {
-  const buttonVariant = getButtonVariantColor();
-  const backgroundColor = useColor(`button.${buttonVariant}.backgroundColor`);
-  const borderColor = useColor(`button.${buttonVariant}.borderColor`);
-  const color = useColor(`button.${buttonVariant}.color`);
+}: ButtonProps) => {
+  const styles = getThemedStyles({ variant, disabled, loading });
 
   const opacity = useMemo(() => new Animated.Value(1), []);
 
@@ -39,38 +40,23 @@ export default function Button({
         onPressIn={() => handlePressIn(opacity)}
         onPressOut={() => handlePressOut(opacity)}
       >
-        <Animated.View
-          style={[
-            styles.buttonContainer,
-            {
-              backgroundColor,
-              borderColor,
-              opacity,
-            },
-          ]}
-        >
-          <View style={{ width: loading ? 24 : 0 }} />
-          <Text style={[styles.buttonLabel, { color }]}>{label}</Text>
-          {loading && <ActivityIndicator color={color} size={24} />}
+        <Animated.View style={[styles.container, { opacity }]}>
+          {loading ? (
+            <ActivityIndicator
+              size={24}
+              color={styles.loadingIndicator.color}
+            />
+          ) : (
+            <Text style={styles.text}>{label}</Text>
+          )}
         </Animated.View>
       </Pressable>
     </View>
   );
 
-  function getButtonVariantColor() {
-    if ((loading || disabled) && variant === "primary") {
-      return "disabled";
-    }
-    if ((loading || disabled) && variant === "secondary") {
-      return "disabledSecondary";
-    }
-
-    return variant;
-  }
-
   function handlePressIn(animation: Animated.Value) {
     Animated.timing(animation, {
-      toValue: 0.7,
+      toValue: 0.8,
       duration: 150,
       useNativeDriver: false,
     }).start();
@@ -83,21 +69,54 @@ export default function Button({
       useNativeDriver: false,
     }).start();
   }
-}
+};
 
-const styles = StyleSheet.create({
-  buttonContainer: {
-    height: 48,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-    gap: 8,
-    borderColor: "black",
-    borderWidth: 2,
-    borderRadius: 4,
-    opacity: 1,
-  },
-  buttonLabel: {
-    fontWeight: "600",
-  },
-});
+type GetThemedStylesProps = {
+  variant: ButtonVariant;
+  disabled: boolean;
+  loading: boolean;
+};
+
+function getThemedStyles({ variant, disabled, loading }: GetThemedStylesProps) {
+  const { tokens } = useTheme();
+  const colorScheme = useColorScheme();
+  const { backgroundColor, color } = getColors();
+
+  return StyleSheet.create({
+    container: {
+      borderRadius: 4,
+      height: 40,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor,
+    },
+    text: {
+      fontFamily: "Inter-Bold",
+      color,
+    },
+    loadingIndicator: {
+      color,
+    },
+  });
+
+  function getColors(): { backgroundColor: string; color: string } {
+    if (disabled) {
+      return {
+        backgroundColor: tokens.colors.neutral[20],
+        color: tokens.colors.neutral[80],
+      };
+    }
+
+    if (variant === "primary") {
+      return {
+        backgroundColor: tokens.colors.purple[60],
+        color: tokens.colors.white,
+      };
+    }
+
+    return {
+      backgroundColor: tokens.colors.neutral[20],
+      color: tokens.colors.neutral[60],
+    };
+  }
+}

@@ -1,36 +1,31 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
-import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { useFonts } from "expo-font";
+import { Amplify } from "aws-amplify";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import * as SplashScreen from "expo-splash-screen";
 
 import { useColorScheme } from "@/components/useColorScheme";
 
-import { Amplify } from "aws-amplify";
 import amplifyconfig from "../src/amplifyconfiguration.json";
-import { TodoContextProvider } from "@/context/TodoContext";
+import Theme from "@/constants/Theme";
+
+import { Authenticator, ThemeProvider } from "@aws-amplify/ui-react-native";
+import { CognitoAuthenticator } from "@/ui-components/cognito-authenticator";
+
 Amplify.configure(amplifyconfig);
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from "expo-router";
+export { ErrorBoundary } from "expo-router";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    Inter: require("../assets/fonts/Inter-Regular.ttf"),
+    "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
+    "Inter-SemiBold": require("../assets/fonts/Inter-SemiBold.ttf"),
     ...FontAwesome.font,
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -49,16 +44,13 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+  const colorMode = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <TodoContextProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-        </Stack>
-      </TodoContextProvider>
+    <ThemeProvider theme={Theme} colorMode={colorMode}>
+      <Authenticator.Provider>
+        <CognitoAuthenticator />
+      </Authenticator.Provider>
     </ThemeProvider>
   );
 }

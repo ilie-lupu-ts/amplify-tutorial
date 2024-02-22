@@ -1,11 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, SafeAreaView } from "react-native";
 
-import Button from "@/components/Button";
 import Spacings from "@/constants/Spacings";
-import { TextInput } from "@/components/TextInput";
-import { SafeAreaView } from "@/components/Themed";
+import { TextField } from "@/components/TextField";
 import { TodoContext } from "@/context/TodoContext";
+import { Button } from "@/components/Button";
 
 export default function AddTodoScreen() {
   const { addTodo, isLoading } = useContext(TodoContext);
@@ -45,12 +44,12 @@ export default function AddTodoScreen() {
       <Text style={styles.title}>Todos</Text>
       <View style={styles.separator} />
       <View style={{ gap: Spacings.x_4 }}>
-        <TextInput
+        <TextField
           placeholder="Name"
           value={inputName}
           onChangeText={setInputName}
         />
-        <TextInput
+        <TextField
           placeholder="Description"
           value={inputDescription}
           onChangeText={setInputDescription}
