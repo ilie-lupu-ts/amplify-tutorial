@@ -2,6 +2,7 @@ import { Slot } from "expo-router";
 import { StyleSheet } from "react-native";
 import { Authenticator } from "@aws-amplify/ui-react-native";
 
+import { ConfirmPasswordResetForm } from "./confirm-reset-password-form";
 import { ConfirmSignUpForm } from "./confirm-sign-up-form";
 import { ForgotPasswordForm } from "./forgot-password-form";
 import { SignInForm } from "./sign-in-form";
@@ -18,6 +19,7 @@ export const CognitoAuthenticator = () => {
         SignUp: () => <SignUpForm />,
         ConfirmSignUp: () => <ConfirmSignUpForm />,
         ForgotPassword: () => <ForgotPasswordForm />,
+        ConfirmResetPassword: () => <ConfirmPasswordResetForm />,
       }}
     >
       <Slot />

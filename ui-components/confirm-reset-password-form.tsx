@@ -5,55 +5,53 @@ import { useAuthenticator, useTheme } from "@aws-amplify/ui-react-native";
 import Logo from "../assets/icons/logo.svg";
 import { Alert } from "@/components/Alert";
 import { Button } from "@/components/Button";
-import { PasswordField } from "@/components/PasswordField";
 import { Spacings } from "@/constants/Spacings";
 import { Text } from "@/components/Text";
 import { TextField } from "@/components/TextField";
 import { View } from "@/components/View";
+import { PasswordField } from "@/components/PasswordField";
 
-export type SignInFormValues = {
-  username: string;
+export type ConfirmPasswordResetFormValues = {
+  confirmation_code: string;
   password: string;
+  confirm_password: string;
 };
 
-export const SignInForm = () => {
+export const ConfirmPasswordResetForm = () => {
   const styles = getThemedStyles();
-  const { submitForm, toSignUp, error, isPending, toForgotPassword } =
-    useAuthenticator();
+  const { submitForm, error, isPending, resendCode } = useAuthenticator();
 
-  const { control, formState, getValues } = useForm<SignInFormValues>({
-    mode: "onChange",
-  });
+  const { control, formState, getValues, reset } =
+    useForm<ConfirmPasswordResetFormValues>({
+      mode: "onChange",
+    });
 
   return (
     <View style={styles.container}>
       <Logo style={styles.logo} />
-
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>Welcome to app</Text>
-        <View style={styles.subtitle}>
-          <Text>Don't have an account?</Text>
-          <Text style={styles.link} onPress={toSignUp}>
-            Create an account
-          </Text>
-        </View>
+        <Text style={styles.title}>Reset password</Text>
+        <Text style={styles.subtitle}>
+          Time to reset your password! Ensure your account stays safe with a
+          fresh password.
+        </Text>
       </View>
 
       <View style={styles.signInForm}>
         {error && <Alert variant="error" title="Error" message={error} />}
         <Controller
           control={control}
-          name="username"
+          name="confirmation_code"
           rules={{
-            required: "Email is required",
+            required: "Confirmation code is required",
           }}
           render={({ field, formState }) => (
             <TextField
-              label="Email"
-              placeholder="Enter your email address"
+              label="Confirmation code"
+              placeholder="Enter your confirmation code"
               value={field.value}
               onChangeText={field.onChange}
-              error={formState.errors.username?.message}
+              error={formState.errors.confirmation_code?.message}
             />
           )}
         />
@@ -77,18 +75,29 @@ export const SignInForm = () => {
             />
           )}
         />
-        <View style={{ alignItems: "flex-end" }}>
-          <Text
-            style={[styles.link, { fontFamily: "Inter-Bold" }]}
-            onPress={toForgotPassword}
-          >
-            Forgot your password?
-          </Text>
-        </View>
+        <Controller
+          control={control}
+          name="confirm_password"
+          rules={{
+            required: "Please confirm your password",
+            validate: (value, { password }) => {
+              return value === password || "Passwords do not match";
+            },
+          }}
+          render={({ field, formState }) => (
+            <PasswordField
+              label="Confirm Password"
+              placeholder="Enter your password"
+              value={field.value}
+              onChangeText={field.onChange}
+              error={formState.errors.confirm_password?.message}
+            />
+          )}
+        />
       </View>
 
       <Button
-        label="Sign in"
+        label="Confirm"
         disabled={!formState.isValid}
         loading={isPending}
         onPress={handleFormSubmit}
@@ -97,9 +106,9 @@ export const SignInForm = () => {
   );
 
   function handleFormSubmit() {
-    const { username, password } = getValues();
+    const { confirmation_code, password } = getValues();
 
-    submitForm({ username, password });
+    submitForm({ confirmation_code, password });
   }
 };
 
@@ -114,8 +123,7 @@ function getThemedStyles() {
       gap: Spacings.x_10,
     },
     titleContainer: {
-      flexDirection: "column",
-      gap: Spacings.x_2,
+      gap: Spacings.x_3,
     },
     title: {
       alignSelf: "center",
@@ -123,9 +131,7 @@ function getThemedStyles() {
       fontSize: theme.tokens.fontSizes.xl,
     },
     subtitle: {
-      flexDirection: "row",
-      gap: Spacings.x_2,
-      justifyContent: "center",
+      textAlign: "center",
     },
     link: {
       color: theme.components?.button?.textLink?.color,
