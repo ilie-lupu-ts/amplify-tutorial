@@ -5,37 +5,32 @@ import { useAuthenticator, useTheme } from "@aws-amplify/ui-react-native";
 import Logo from "../assets/icons/logo.svg";
 import { Alert } from "@/components/Alert";
 import { Button } from "@/components/Button";
-import { PasswordField } from "@/components/PasswordField";
 import { Spacings } from "@/constants/Spacings";
 import { Text } from "@/components/Text";
 import { TextField } from "@/components/TextField";
 import { View } from "@/components/View";
 
-export type SignInFormValues = {
+export type ForgotPasswordFormValues = {
   username: string;
-  password: string;
 };
 
-export const SignInForm = () => {
+export const ForgotPasswordForm = () => {
   const styles = getThemedStyles();
-  const { submitForm, toSignUp, error, isPending, toForgotPassword } =
-    useAuthenticator();
+  const { submitForm, error, isPending, resendCode } = useAuthenticator();
 
-  const { control, formState, getValues } = useForm<SignInFormValues>({
-    mode: "onChange",
-  });
+  const { control, formState, getValues, reset } =
+    useForm<ForgotPasswordFormValues>({
+      mode: "onChange",
+    });
 
   return (
     <View style={styles.container}>
       <Logo style={styles.logo} />
 
       <View>
-        <Text style={styles.title}>Welcome to app</Text>
+        <Text style={styles.title}>Forgot your password?</Text>
         <View style={styles.subtitle}>
-          <Text>Don't have an account?</Text>
-          <Text style={styles.link} onPress={toSignUp}>
-            Create an account
-          </Text>
+          <Text>Oh no! It happens to the best of us.</Text>
         </View>
       </View>
 
@@ -45,7 +40,7 @@ export const SignInForm = () => {
           control={control}
           name="username"
           rules={{
-            required: "Email is required",
+            required: "Email address is required",
           }}
           render={({ field, formState }) => (
             <TextField
@@ -57,38 +52,10 @@ export const SignInForm = () => {
             />
           )}
         />
-        <Controller
-          control={control}
-          name="password"
-          rules={{
-            required: "Password is required",
-            minLength: {
-              value: 8,
-              message: "Password must be at least 8 characters",
-            },
-          }}
-          render={({ field, formState }) => (
-            <PasswordField
-              label="Password"
-              placeholder="Enter your password"
-              value={field.value}
-              onChangeText={field.onChange}
-              error={formState.errors.password?.message}
-            />
-          )}
-        />
-        <View style={{ alignItems: "flex-end" }}>
-          <Text
-            style={[styles.link, { fontFamily: "Inter-Bold" }]}
-            onPress={toForgotPassword}
-          >
-            Forgot your password?
-          </Text>
-        </View>
       </View>
 
       <Button
-        label="Sign in"
+        label="Confirm"
         disabled={!formState.isValid}
         loading={isPending}
         onPress={handleFormSubmit}
@@ -97,9 +64,9 @@ export const SignInForm = () => {
   );
 
   function handleFormSubmit() {
-    const { username, password } = getValues();
+    const { username } = getValues();
 
-    submitForm({ username, password });
+    submitForm({ username });
   }
 };
 

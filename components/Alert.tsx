@@ -1,10 +1,10 @@
 import { FontAwesome } from "@expo/vector-icons";
 
-import { Text } from "./Text";
-import { View } from "./View";
-import { useTheme } from "@aws-amplify/ui-react-native";
 import { StyleSheet } from "react-native";
-import Spacings from "@/constants/Spacings";
+import { Text } from "./Text";
+import { useTheme } from "@aws-amplify/ui-react-native";
+import { View } from "./View";
+import { Spacings } from "@/constants/Spacings";
 
 type AlertVariant = "default" | "error";
 
@@ -53,6 +53,7 @@ function getThemedStyles(props: AlertProps) {
       gap: Spacings.x_4,
       paddingHorizontal: Spacings.x_4,
       paddingVertical: Spacings.x_3,
+      borderRadius: 8,
       backgroundColor,
     },
     iconContainer: {

@@ -39,7 +39,9 @@ export const TodoContextProvider = ({
 
   async function addTodo({ name, description }: AddTodoParams) {
     try {
+      console.log("adding todo", { name, description });
       setIsLoading(true);
+
       await client.graphql({
         query: createTodo,
         variables: {
@@ -50,6 +52,7 @@ export const TodoContextProvider = ({
         },
       });
       const newTodos = await fetchTodos();
+
       setTodos(newTodos);
       setIsLoading(false);
     } catch (error) {

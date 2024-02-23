@@ -1,15 +1,15 @@
-import { useState } from "react";
-import { useTheme } from "@aws-amplify/ui-react-native";
 import { StyleSheet } from "react-native";
+import { Controller, useForm } from "react-hook-form";
+import { useAuthenticator, useTheme } from "@aws-amplify/ui-react-native";
 
-import { View } from "@/components/View";
 import Logo from "../assets/icons/logo.svg";
+import { Alert } from "@/components/Alert";
+import { Button } from "@/components/Button";
+import { PasswordField } from "@/components/PasswordField";
+import { Spacings } from "@/constants/Spacings";
 import { Text } from "@/components/Text";
 import { TextField } from "@/components/TextField";
-import { PasswordField } from "@/components/PasswordField";
-import { Button } from "@/components/Button";
-import Spacings from "@/constants/Spacings";
-import { Alert } from "@/components/Alert";
+import { View } from "@/components/View";
 
 export type SignUpFormValues = {
   email: string;
@@ -17,26 +17,13 @@ export type SignUpFormValues = {
   confirmPassword: string;
 };
 
-export type SignUpFormProps = {
-  onSubmit: (values: SignUpFormValues) => void;
-  toSignIn?: () => void;
-  error?: string;
-  isLoading?: boolean;
-};
-
-export const SignUpForm = ({
-  onSubmit,
-  toSignIn,
-  error,
-  isLoading,
-}: SignUpFormProps) => {
+export const SignUpForm = () => {
   const styles = getThemedStyles();
-  const [form, setForm] = useState<SignUpFormValues>({
-    email: "",
-    password: "",
-    confirmPassword: "",
+  const { submitForm, toSignIn, error, isPending } = useAuthenticator();
+
+  const { control, formState, getValues } = useForm<SignUpFormValues>({
+    mode: "onChange",
   });
-  const isDisabled = !form.email || !form.password || !form.confirmPassword;
 
   return (
     <View style={styles.container}>
@@ -54,43 +41,76 @@ export const SignUpForm = ({
 
       <View style={styles.signInForm}>
         {error && <Alert variant="error" title="Error" message={error} />}
-        <TextField
-          label="Email"
-          placeholder="Enter your email address"
-          value={form.email}
-          onChangeText={(email) => setForm((form) => ({ ...form, email }))}
+        <Controller
+          control={control}
+          name="email"
+          rules={{
+            required: "Email is required",
+          }}
+          render={({ field, formState }) => (
+            <TextField
+              label="Email"
+              placeholder="Enter your email address"
+              value={field.value}
+              onChangeText={field.onChange}
+              error={formState.errors.email?.message}
+            />
+          )}
         />
-        <PasswordField
-          label="Password"
-          placeholder="Enter your password"
-          value={form.password}
-          onChangeText={(password) =>
-            setForm((form) => ({ ...form, password }))
-          }
+        <Controller
+          control={control}
+          name="password"
+          rules={{
+            required: "Password is required",
+            minLength: {
+              value: 8,
+              message: "Password must be at least 8 characters",
+            },
+          }}
+          render={({ field, formState }) => (
+            <PasswordField
+              label="Password"
+              placeholder="Enter your password"
+              value={field.value}
+              onChangeText={field.onChange}
+              error={formState.errors.password?.message}
+            />
+          )}
         />
-        <PasswordField
-          label="Confirm Password"
-          placeholder="Please confirm your Password"
-          value={form.confirmPassword}
-          onChangeText={(confirmPassword) =>
-            setForm((form) => ({ ...form, confirmPassword }))
-          }
+        <Controller
+          control={control}
+          name="confirmPassword"
+          rules={{
+            required: "Please confirm your password",
+            validate: (value, { password }) => {
+              return value === password || "Passwords do not match";
+            },
+          }}
+          render={({ field, formState }) => (
+            <PasswordField
+              label="Confirm Password"
+              placeholder="Please confirm your Password"
+              value={field.value}
+              onChangeText={field.onChange}
+              error={formState.errors.confirmPassword?.message}
+            />
+          )}
         />
       </View>
       <Button
         label="Sign up"
-        disabled={isDisabled}
-        loading={isLoading}
-        onPress={() => {
-          onSubmit({
-            email: form.email,
-            password: form.password,
-            confirmPassword: form.confirmPassword,
-          });
-        }}
+        disabled={!formState.isValid}
+        loading={isPending}
+        onPress={handleFormSubmit}
       />
     </View>
   );
+
+  function handleFormSubmit() {
+    const { email, password } = getValues();
+
+    submitForm({ email, password });
+  }
 };
 
 function getThemedStyles() {

@@ -1,9 +1,11 @@
 import { forwardRef } from "react";
 import { useTheme } from "@aws-amplify/ui-react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 import { TextInput as DefaultTextInput, StyleSheet } from "react-native";
 
 import { Label } from "./Label";
 import { View } from "./View";
+import { Spacings } from "@/constants/Spacings";
 
 type TextFieldSize = "small" | "default" | "large";
 
@@ -11,13 +13,15 @@ export type TextFieldProps = {
   label?: string;
   size?: TextFieldSize;
   disabled?: boolean;
+  error?: string;
+  name?: string;
 };
 
 export const TextField = forwardRef(function (
   props: TextFieldProps & DefaultTextInput["props"],
   ref: React.ForwardedRef<DefaultTextInput>
 ) {
-  const { label, style, disabled, ...otherProps } = props;
+  const { label, style, disabled, error, ...otherProps } = props;
   const styles = getThemedStyles(props);
 
   return (
@@ -32,11 +36,25 @@ export const TextField = forwardRef(function (
           {...otherProps}
         />
       </View>
+      {error && (
+        <View style={styles.errorContainer}>
+          <MaterialIcons
+            name="error-outline"
+            size={20}
+            color={styles.errorText.color}
+          />
+          <Label style={styles.errorText}>{error}</Label>
+        </View>
+      )}
     </View>
   );
 });
 
-function getThemedStyles({ size = "default", disabled }: TextFieldProps) {
+function getThemedStyles({
+  size = "default",
+  disabled,
+  error,
+}: TextFieldProps) {
   const { tokens } = useTheme();
   const { height, lineHeight, fontSize } = getSize();
 
@@ -56,6 +74,16 @@ function getThemedStyles({ size = "default", disabled }: TextFieldProps) {
       marginBottom: 8,
       lineHeight,
       fontSize,
+      color: error ? tokens.colors.red[60] : undefined,
+    },
+    errorContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: Spacings.x_2,
+      paddingVertical: Spacings.x_2,
+    },
+    errorText: {
+      color: tokens.colors.red[60],
     },
     field: {
       fontSize,

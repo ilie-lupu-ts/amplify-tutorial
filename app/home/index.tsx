@@ -1,11 +1,14 @@
 import { Link } from "expo-router";
 import { useContext } from "react";
-import { StyleSheet, FlatList, SafeAreaView, Text, View } from "react-native";
+import { StyleSheet, FlatList } from "react-native";
 
+import { FontAwesome } from "@expo/vector-icons";
+import { SafeAreaView } from "@/components/SafeAreaView";
+import { Spacings } from "@/constants/Spacings";
+import { Text } from "@/components/Text";
 import { Todo } from "@/src/API";
 import { TodoContext } from "@/context/TodoContext";
-import { FontAwesome } from "@expo/vector-icons";
-import Spacings from "@/constants/Spacings";
+import { View } from "@/components/View";
 
 export default function TabOneScreen() {
   const { todos } = useContext(TodoContext);
@@ -50,7 +53,7 @@ const TodoList = ({ todos }: { todos: Todo[] }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: Spacings.x_3,
+    paddingHorizontal: Spacings.x_6,
   },
   title: {
     fontSize: 20,

@@ -1,42 +1,37 @@
-import { useContext, useEffect, useState } from "react";
-import { StyleSheet, View, Text, SafeAreaView } from "react-native";
+import { useContext } from "react";
+import { StyleSheet } from "react-native";
+import { Controller, useForm } from "react-hook-form";
 
-import Spacings from "@/constants/Spacings";
+import { Button } from "@/components/Button";
+import { SafeAreaView } from "@/components/SafeAreaView";
+import { Spacings } from "@/constants/Spacings";
+import { Text } from "@/components/Text";
 import { TextField } from "@/components/TextField";
 import { TodoContext } from "@/context/TodoContext";
-import { Button } from "@/components/Button";
+import { View } from "@/components/View";
+
+type AddTodoFormValues = {
+  name: string;
+  description: string;
+};
 
 export default function AddTodoScreen() {
   const { addTodo, isLoading } = useContext(TodoContext);
-
-  const [inputName, setInputName] = useState("");
-  const [inputDescription, setInputDescription] = useState("");
-  const [enabledSubmit, setEnabledSubmit] = useState(false);
-  const disabled = !enabledSubmit || isLoading;
-
-  useEffect(() => {
-    const shouldEnableSubmit =
-      inputName.length > 0 && inputDescription.length > 0;
-
-    setEnabledSubmit(shouldEnableSubmit);
-  }, [inputName, inputDescription]);
+  const { control, formState, getValues } = useForm<AddTodoFormValues>({
+    mode: "onChange",
+  });
 
   async function handleSubmit() {
     try {
-      resetFormInput();
+      const { name, description } = getValues();
 
       await addTodo({
-        name: inputName,
-        description: inputDescription,
+        name,
+        description,
       });
     } catch (error) {
       console.log("error creating todo", error);
     }
-  }
-
-  function resetFormInput() {
-    setInputName("");
-    setInputDescription("");
   }
 
   return (
@@ -44,20 +39,37 @@ export default function AddTodoScreen() {
       <Text style={styles.title}>Todos</Text>
       <View style={styles.separator} />
       <View style={{ gap: Spacings.x_4 }}>
-        <TextField
-          placeholder="Name"
-          value={inputName}
-          onChangeText={setInputName}
+        <Controller
+          control={control}
+          name="name"
+          rules={{
+            required: "Name is required",
+          }}
+          render={({ field: { value, onChange } }) => (
+            <TextField
+              label="Name"
+              placeholder="Enter a name"
+              value={value}
+              onChangeText={onChange}
+            />
+          )}
         />
-        <TextField
-          placeholder="Description"
-          value={inputDescription}
-          onChangeText={setInputDescription}
+        <Controller
+          control={control}
+          name="description"
+          render={({ field: { value, onChange } }) => (
+            <TextField
+              label="Description"
+              placeholder="Enter a description"
+              value={value}
+              onChangeText={onChange}
+            />
+          )}
         />
       </View>
       <View style={styles.separator} />
       <Button
-        disabled={disabled}
+        disabled={!formState.isValid}
         loading={isLoading}
         label="Add"
         onPress={handleSubmit}

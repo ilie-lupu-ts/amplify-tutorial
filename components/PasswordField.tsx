@@ -8,7 +8,9 @@ import {
 } from "react-native";
 
 import { Label } from "./Label";
+import { MaterialIcons } from "@expo/vector-icons";
 import { View } from "./View";
+import { Spacings } from "@/constants/Spacings";
 
 type PasswordFieldSize = "small" | "default" | "large";
 
@@ -16,13 +18,14 @@ export type PasswordFieldProps = {
   label?: string;
   size?: PasswordFieldSize;
   disabled?: boolean;
+  error?: string;
 };
 
 export const PasswordField = forwardRef(function (
   props: PasswordFieldProps & DefaultTextInput["props"],
   ref: React.ForwardedRef<DefaultTextInput>
 ) {
-  const { label, style, disabled, ...otherProps } = props;
+  const { label, style, disabled, error, ...otherProps } = props;
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const styles = getThemedStyles(props);
 
@@ -42,6 +45,16 @@ export const PasswordField = forwardRef(function (
           <FontAwesome name={secureTextEntry ? "eye" : "eye-slash"} size={20} />
         </Pressable>
       </View>
+      {error && (
+        <View style={styles.errorContainer}>
+          <MaterialIcons
+            name="error-outline"
+            size={20}
+            color={styles.errorText.color}
+          />
+          <Label style={styles.errorText}>{error}</Label>
+        </View>
+      )}
     </View>
   );
 
@@ -87,6 +100,15 @@ function getThemedStyles({ size = "default", disabled }: PasswordFieldProps) {
       paddingHorizontal: 16,
       borderLeftWidth: 1,
       borderColor,
+    },
+    errorContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: Spacings.x_2,
+      paddingVertical: Spacings.x_2,
+    },
+    errorText: {
+      color: tokens.colors.red[60],
     },
   });
 

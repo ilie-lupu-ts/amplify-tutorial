@@ -1,7 +1,6 @@
 import {
   Theme as AmplifyTheme,
   defaultTheme,
-  useTheme as useAmplifyTheme,
 } from "@aws-amplify/ui-react-native";
 
 const Theme: AmplifyTheme = {

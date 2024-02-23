@@ -1,8 +1,6 @@
-import { StyleSheet } from "react-native";
-
 const BASE = 4;
 
-const Spacings = {
+export const Spacings = {
   /** 4px */
   x_1: BASE * 1,
   /** 8px */
@@ -26,5 +24,3 @@ const Spacings = {
   /** 40px */
   x_10: BASE * 10,
 };
-
-export default Spacings;

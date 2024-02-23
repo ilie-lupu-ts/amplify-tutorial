@@ -5,37 +5,33 @@ import { useAuthenticator, useTheme } from "@aws-amplify/ui-react-native";
 import Logo from "../assets/icons/logo.svg";
 import { Alert } from "@/components/Alert";
 import { Button } from "@/components/Button";
-import { PasswordField } from "@/components/PasswordField";
 import { Spacings } from "@/constants/Spacings";
 import { Text } from "@/components/Text";
 import { TextField } from "@/components/TextField";
 import { View } from "@/components/View";
 
-export type SignInFormValues = {
-  username: string;
-  password: string;
+export type ConfirmSignUpFormValues = {
+  confirmation_code: string;
 };
 
-export const SignInForm = () => {
+export const ConfirmSignUpForm = () => {
   const styles = getThemedStyles();
-  const { submitForm, toSignUp, error, isPending, toForgotPassword } =
+  const { submitForm, error, isPending, resendCode, codeDeliveryDetails } =
     useAuthenticator();
 
-  const { control, formState, getValues } = useForm<SignInFormValues>({
-    mode: "onChange",
-  });
+  const { control, formState, getValues, reset } =
+    useForm<ConfirmSignUpFormValues>({
+      mode: "onChange",
+    });
 
   return (
     <View style={styles.container}>
       <Logo style={styles.logo} />
 
       <View>
-        <Text style={styles.title}>Welcome to app</Text>
+        <Text style={styles.title}>Confirm your email</Text>
         <View style={styles.subtitle}>
-          <Text>Don't have an account?</Text>
-          <Text style={styles.link} onPress={toSignUp}>
-            Create an account
-          </Text>
+          <Text>{`Your code is on the way. To log in, enter the code we emailed to ${codeDeliveryDetails.Destination}. It may take a minute to arrive.`}</Text>
         </View>
       </View>
 
@@ -43,52 +39,36 @@ export const SignInForm = () => {
         {error && <Alert variant="error" title="Error" message={error} />}
         <Controller
           control={control}
-          name="username"
+          name="confirmation_code"
           rules={{
-            required: "Email is required",
+            required: "Confirmation code is required",
           }}
           render={({ field, formState }) => (
             <TextField
-              label="Email"
-              placeholder="Enter your email address"
+              label="Confirmation code"
+              placeholder="Enter your code"
               value={field.value}
               onChangeText={field.onChange}
-              error={formState.errors.username?.message}
+              error={formState.errors.confirmation_code?.message}
             />
           )}
         />
-        <Controller
-          control={control}
-          name="password"
-          rules={{
-            required: "Password is required",
-            minLength: {
-              value: 8,
-              message: "Password must be at least 8 characters",
-            },
-          }}
-          render={({ field, formState }) => (
-            <PasswordField
-              label="Password"
-              placeholder="Enter your password"
-              value={field.value}
-              onChangeText={field.onChange}
-              error={formState.errors.password?.message}
-            />
-          )}
-        />
+
         <View style={{ alignItems: "flex-end" }}>
           <Text
             style={[styles.link, { fontFamily: "Inter-Bold" }]}
-            onPress={toForgotPassword}
+            onPress={() => {
+              resendCode();
+              reset();
+            }}
           >
-            Forgot your password?
+            Request a new code
           </Text>
         </View>
       </View>
 
       <Button
-        label="Sign in"
+        label="Confirm"
         disabled={!formState.isValid}
         loading={isPending}
         onPress={handleFormSubmit}
@@ -97,9 +77,9 @@ export const SignInForm = () => {
   );
 
   function handleFormSubmit() {
-    const { username, password } = getValues();
+    const { confirmation_code } = getValues();
 
-    submitForm({ username, password });
+    submitForm({ confirmation_code });
   }
 };
 
