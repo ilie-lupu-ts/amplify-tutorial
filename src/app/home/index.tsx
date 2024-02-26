@@ -6,7 +6,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { SafeAreaView } from "@/components/SafeAreaView";
 import { Spacings } from "@/constants/Spacings";
 import { Text } from "@/components/Text";
-import { Todo } from "@/src/API";
+import { Todo } from "@/API";
 import { TodoContext } from "@/context/TodoContext";
 import { View } from "@/components/View";
 

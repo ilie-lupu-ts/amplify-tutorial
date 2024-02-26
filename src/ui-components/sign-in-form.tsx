@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import { useAuthenticator, useTheme } from "@aws-amplify/ui-react-native";
+import { useLocales } from "expo-localization";
 
 import Logo from "../assets/icons/logo.svg";
 import { Alert } from "@/components/Alert";
@@ -18,6 +19,8 @@ export type SignInFormValues = {
 
 export const SignInForm = () => {
   const styles = getThemedStyles();
+  const locales = useLocales();
+
   const { submitForm, toSignUp, error, isPending, toForgotPassword } =
     useAuthenticator();
 

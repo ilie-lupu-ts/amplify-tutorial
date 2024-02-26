@@ -1,6 +1,6 @@
-import { Todo } from "@/src/API";
-import { createTodo } from "@/src/graphql/mutations";
-import { listTodos } from "@/src/graphql/queries";
+import { Todo } from "@/API";
+import { createTodo } from "@/graphql/mutations";
+import { listTodos } from "@/graphql/queries";
 import { generateClient } from "aws-amplify/api";
 import { createContext, useEffect, useMemo, useState } from "react";
 

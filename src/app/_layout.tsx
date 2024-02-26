@@ -9,7 +9,7 @@ import { useColorScheme } from "@/components/useColorScheme";
 import { Authenticator, ThemeProvider } from "@aws-amplify/ui-react-native";
 
 import Theme from "@/constants/Theme";
-import amplifyconfig from "../src/amplifyconfiguration.json";
+import amplifyconfig from "../amplifyconfiguration.json";
 
 import { Spacings } from "@/constants/Spacings";
 import { View } from "@/components/View";
