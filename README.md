@@ -2,6 +2,6 @@
 
 # Screenshot
 > Android
->
-> https://github.com/ilie-lupu-ts/amplify-tutorial/assets/127083262/7a12d14c-540b-4b8b-aae7-41cb2cbf347c
+> 
+> https://github.com/ilie-lupu-ts/amplify-tutorial/assets/127083262/9de255c2-87d7-41d5-a80b-5184e23f997c
 
