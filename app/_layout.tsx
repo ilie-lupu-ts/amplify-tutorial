@@ -1,16 +1,23 @@
 import { useEffect } from "react";
+import { Slot } from "expo-router";
 import { useFonts } from "expo-font";
 import { Amplify } from "aws-amplify";
+import { StyleSheet } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import * as SplashScreen from "expo-splash-screen";
-
 import { useColorScheme } from "@/components/useColorScheme";
-
-import amplifyconfig from "../src/amplifyconfiguration.json";
-import Theme from "@/constants/Theme";
-
 import { Authenticator, ThemeProvider } from "@aws-amplify/ui-react-native";
-import { CognitoAuthenticator } from "@/ui-components/cognito-authenticator";
+
+import Theme from "@/constants/Theme";
+import amplifyconfig from "../src/amplifyconfiguration.json";
+
+import { Spacings } from "@/constants/Spacings";
+import { View } from "@/components/View";
+import { SignInForm } from "@/ui-components/sign-in-form";
+import { SignUpForm } from "@/ui-components/sign-up-form";
+import { ConfirmSignUpForm } from "@/ui-components/confirm-sign-up-form";
+import { ForgotPasswordForm } from "@/ui-components/forgot-password-form";
+import { ConfirmPasswordResetForm } from "@/ui-components/confirm-reset-password-form";
 
 Amplify.configure(amplifyconfig);
 
@@ -49,8 +56,27 @@ function RootLayoutNav() {
   return (
     <ThemeProvider theme={Theme} colorMode={colorMode}>
       <Authenticator.Provider>
-        <CognitoAuthenticator />
+        <Authenticator
+          Container={(props) => <View style={styles.container} {...props} />}
+          components={{
+            SignIn: () => <SignInForm />,
+            SignUp: () => <SignUpForm />,
+            ConfirmSignUp: () => <ConfirmSignUpForm />,
+            ForgotPassword: () => <ForgotPasswordForm />,
+            ConfirmResetPassword: () => <ConfirmPasswordResetForm />,
+          }}
+        >
+          <Slot />
+        </Authenticator>
       </Authenticator.Provider>
     </ThemeProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: Spacings.x_3,
+  },
+});
