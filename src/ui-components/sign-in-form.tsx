@@ -1,9 +1,8 @@
 import { StyleSheet } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import { useAuthenticator, useTheme } from "@aws-amplify/ui-react-native";
-import { useLocales } from "expo-localization";
 
-import Logo from "../assets/icons/logo.svg";
+import Logo from "../../assets/icons/logo.svg";
 import { Alert } from "@/components/Alert";
 import { Button } from "@/components/Button";
 import { PasswordField } from "@/components/PasswordField";
@@ -11,6 +10,7 @@ import { Spacings } from "@/constants/Spacings";
 import { Text } from "@/components/Text";
 import { TextField } from "@/components/TextField";
 import { View } from "@/components/View";
+import { useTranslation } from "@/i18n";
 
 export type SignInFormValues = {
   username: string;
@@ -19,7 +19,7 @@ export type SignInFormValues = {
 
 export const SignInForm = () => {
   const styles = getThemedStyles();
-  const locales = useLocales();
+  const { t } = useTranslation();
 
   const { submitForm, toSignUp, error, isPending, toForgotPassword } =
     useAuthenticator();
@@ -33,11 +33,11 @@ export const SignInForm = () => {
       <Logo style={styles.logo} />
 
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>Welcome to app</Text>
+        <Text style={styles.title}>{t("signin.title")}</Text>
         <View style={styles.subtitle}>
-          <Text>Don't have an account?</Text>
+          <Text>{t("signin.subtitle")}</Text>
           <Text style={styles.link} onPress={toSignUp}>
-            Create an account
+            {t("signin.subtitle_link")}
           </Text>
         </View>
       </View>
@@ -48,12 +48,12 @@ export const SignInForm = () => {
           control={control}
           name="username"
           rules={{
-            required: "Email is required",
+            required: t("fields.email.validations.required"),
           }}
           render={({ field, formState }) => (
             <TextField
-              label="Email"
-              placeholder="Enter your email address"
+              label={t("fields.email.label")}
+              placeholder={t("fields.email.placeholder")}
               value={field.value}
               onChangeText={field.onChange}
               error={formState.errors.username?.message}
@@ -64,10 +64,12 @@ export const SignInForm = () => {
           control={control}
           name="password"
           rules={{
-            required: "Password is required",
+            required: t("fields.password.validations.required"),
             minLength: {
               value: 8,
-              message: "Password must be at least 8 characters",
+              message: t("fields.password.validations.minLength", {
+                minLength: 8,
+              }),
             },
           }}
           render={({ field, formState }) => (

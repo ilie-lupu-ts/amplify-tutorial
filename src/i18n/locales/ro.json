@@ -1,0 +1,26 @@
+{
+  "signin": {
+    "title": "Bun venit",
+    "subtitle": "Nu ai un cont?",
+    "subtitle_link": "Creează cont",
+    "forgot_password": "Ai uitat parola?",
+    "submit": "Autentificare"
+  },
+  "fields": {
+    "email": {
+      "label": "Email",
+      "placeholder": "Introdu adresa de email",
+      "validations": {
+        "required": "Adresa de email este obligatorie"
+      }
+    },
+    "password": {
+      "label": "Parolă",
+      "placeholder": "Introdu parola",
+      "validations": {
+        "required": "Parola este obligatorie",
+        "minLength": "Parola trebuie să aibă minim {{minLength}} caractere"
+      }
+    }
+  }
+}

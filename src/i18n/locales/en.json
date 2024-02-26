@@ -1,0 +1,26 @@
+{
+  "signin": {
+    "title": "Welcome to app",
+    "subtitle": "Don't have an account?",
+    "subtitle_link": "Create an account",
+    "forgot_password": "Forgot password?",
+    "submit": "Sign in"
+  },
+  "fields": {
+    "email": {
+      "label": "Email",
+      "placeholder": "Enter your email",
+      "validations": {
+        "required": "Email is required"
+      }
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "Enter your password",
+      "validations": {
+        "required": "Password is required",
+        "minLength": "Password must be at least {{minLength}} characters long"
+      }
+    }
+  }
+}

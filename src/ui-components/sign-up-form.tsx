@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import { useAuthenticator, useTheme } from "@aws-amplify/ui-react-native";
 
-import Logo from "../assets/icons/logo.svg";
+import Logo from "../../assets/icons/logo.svg";
 import { Alert } from "@/components/Alert";
 import { Button } from "@/components/Button";
 import { PasswordField } from "@/components/PasswordField";
